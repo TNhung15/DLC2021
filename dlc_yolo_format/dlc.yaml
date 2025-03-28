@@ -1,0 +1,6 @@
+train: ./images/train
+val: ./images/val
+test: ./images/test
+
+nc: 10
+names: ['alb_id', 'aze_passport', 'esp_id', 'est_id', 'fin_id', 'grc_passport', 'lva_passport', 'rus_internalpassport', 'srb_passport', 'svk_id']
