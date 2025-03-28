@@ -1,0 +1,6 @@
+train: ./train
+val: ./val
+test: ./test
+
+nc: 2
+names: ['recap', 'original']
