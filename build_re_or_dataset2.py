@@ -33,7 +33,6 @@ def polygon_to_bbox(points_x, points_y):
 
 # Xử lý dữ liệu
 image_info = []
-counter = 0
 
 for path in [or_path, re_path]:
     label = "original" if "or" in path else "recap"
@@ -47,12 +46,15 @@ for path in [or_path, re_path]:
         # Tìm tất cả file JSON trực tiếp trong class_path
         json_files = glob.glob(os.path.join(class_path, "*.json"))
 
-        # Duyệt qua từng file JSON
+        # Duyệt qua từng file JSON (từng folder như 00.re0001)
         for json_file in json_files:
             # Trích xuất tên thư mục từ tên file JSON
             sub_path_name = os.path.basename(json_file).replace(".json", "")  # "00.re0001"
 
-            # Tạo đường dẫn đến thư mục ảnh tương ứng
+            # khởi tạo counter cho mỗi folder con
+            counter = 0
+
+            # đường dẫn đến thư mục ảnh tương ứng
             img_dir = os.path.join(img_base_path, class_name, sub_path_name)  # data/re/images/alb_id/00.re0001
 
             # Đọc file JSON
@@ -88,12 +90,13 @@ for path in [or_path, re_path]:
                             aspect_ratio_wh = width / height if height > 0 else float('inf')
                             aspect_ratio_hw = height / width if width > 0 else float('inf')
 
-                            # Kiểm tra điều kiện tỷ lệ > 4
-                            if aspect_ratio_wh > 4 or aspect_ratio_hw > 4:
-                                print(f"Bỏ qua ảnh {img_file} do tỷ lệ w/h hoặc h/w > 4")
+                            # Kiểm tra điều kiện tỷ lệ > 3.5
+                            if aspect_ratio_wh > 3.5 or aspect_ratio_hw > 3.5:
+                                print(f"Bỏ qua ảnh {img_file} do tỷ lệ w/h hoặc h/w > 3.5")
                                 continue
 
-                            cropped_name = f"{label}_{class_name}_{counter}.jpg"
+                            # Đặt tên file
+                            cropped_name = f"{label}_{class_name}_{sub_path_name}_{counter}.jpg" # vd re_alb_id_00.re0001_01.jpg
 
                             # Lưu ảnh crop vào thư mục tạm
                             temp_img_path = os.path.join(BASE_DIR, "temp", cropped_name)
@@ -106,7 +109,7 @@ for path in [or_path, re_path]:
                                 "doc_type": class_name,
                                 "filename": cropped_name
                             })
-                            counter += 1
+                            counter += 1  # Tăng counter sau mỗi ảnh trong folder
                         break
 
                 # Giải phóng bộ nhớ của ảnh gốc
